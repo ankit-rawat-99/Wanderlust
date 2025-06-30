@@ -1,0 +1,47 @@
+major_project_airbnb/
+│
+├── app.js
+├── package.json
+├── schema.js
+├── cloudConfig.js
+│
+├── models/
+│   ├── listing.js
+│   ├── review.js
+│   └── user.js
+│
+├── controllers/
+│   └── listings.js
+│
+├── routes/
+│   ├── listing.js
+│   ├── reviews.js
+│   └── user.js
+│
+├── middleware.js
+│
+├── utils/
+│   ├── ExpressError.js
+│   └── wrapAsync.js
+│
+├── public/
+│   ├── css/
+│   │   └── rating.css
+│   ├── js/
+│   │   └── map.js
+│   └── images/
+│       └── default.jpg
+│
+└── views/
+    ├── layouts/
+    │   └── boilerplate.ejs
+    ├── includes/
+    │   ├── flash.ejs
+    │   └── navbar.ejs
+    ├── listings/
+    │   ├── edit.ejs
+    │   ├── index.ejs
+    │   ├── new.ejs
+    │   └── show.ejs
+    └── users/
+        └── (login/signup/profile ejs files if any)
