@@ -69,9 +69,9 @@ module.exports.renderEditForm = async (req, res) => {
 };
 
 module.exports.updateListing = async (req, res) => {
+    const { id } = req.params;
+    
     try {
-        let { id } = req.params;
-        
         // Get the updated location
         const location = req.body.listing.location;
         
