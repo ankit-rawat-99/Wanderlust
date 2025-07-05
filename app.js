@@ -97,7 +97,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
-     res.locals.error=req.flash("error");
+    res.locals.error=req.flash("error");
     res.locals.currUser = req.user;
     next();
 });
@@ -116,20 +116,38 @@ app.use((req,res,next)=>{
 
 app.use("/listings", listingRouter); 
 app.use("/listings/:id/reviews",reviewsRouter);
-app.use("/",userRouter);
 
- 
-
-app.use((err, req, res, next) => {
-  let { statusCode =500, message="something went wrong!" } = err;
- res.status(statusCode).render("error.ejs",{err});
-  //res.status(statusCode).send(message);
+// Root route handler
+app.get("/", (req, res) => {
+    res.redirect("/listings");
 });
 
-//Middleware
-app.use((err,req,res,next) =>{
-  let {statusCode ,message  }=err;
- res.status(statusCode).send(message); 
+app.use("/",userRouter);
+
+// 404 handler - must be before error handler
+app.all("*", (req, res, next) => {
+    next(new ExpressError(404, "Page not found"));
+});
+
+app.use((err, req, res, next) => {
+  // Check if headers have already been sent
+  if (res.headersSent) {
+    console.log("Headers already sent, skipping error handler");
+    return next(err);
+  }
+  
+  console.log("Error occurred:", err.message);
+  console.log("Request URL:", req.url);
+  console.log("Request method:", req.method);
+  
+  let { statusCode =500, message="something went wrong!" } = err;
+  
+  try {
+    res.status(statusCode).render("error.ejs",{err});
+  } catch (renderError) {
+    console.log("Error rendering error template:", renderError.message);
+    res.status(statusCode).send(`Error: ${message}`);
+  }
 });
 
 app.listen(8080,()=>{
