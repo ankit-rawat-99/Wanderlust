@@ -56,18 +56,6 @@ module.exports.createListing = async (req, res) => {
     }
 };
 
-module.exports.renderEditForm = async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
-    if (!listing) {
-        req.flash("error", "Listing Your Requested For Does Not Exist !");
-        return res.redirect("/listings");
-    }
-    let originalImageUrl = listing.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/c_scale,h_250,w_370/");
- return   res.render("listings/edit.ejs", { listing, originalImageUrl });
-};
-
 module.exports.updateListing = async (req, res) => {
     const { id } = req.params;
     
@@ -79,14 +67,19 @@ module.exports.updateListing = async (req, res) => {
         const geoRes = await fetch(
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
         );
-        const geoData = await geoRes.json();
-
+        let geoData;
         let geometry = { type: "Point", coordinates: [0, 0] };
-        if (geoData && geoData.length > 0) {
-            geometry = {
-                type: "Point",
-                coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)]
-            };
+        if (geoRes.ok && geoRes.headers.get("content-type") && geoRes.headers.get("content-type").includes("application/json")) {
+            geoData = await geoRes.json();
+            if (geoData && geoData.length > 0) {
+                geometry = {
+                    type: "Point",
+                    coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)]
+                };
+            }
+        } else {
+            req.flash("error", "Failed to fetch geolocation data. Please try again later.");
+            return res.redirect(`/listings/${id}/edit`);
         }
 
         // Update the listing with new data including geometry
@@ -115,7 +108,6 @@ module.exports.updateListing = async (req, res) => {
         return res.redirect(`/listings/${id}/edit`);
     }
 };
-
 module.exports.deleteListing = async (req, res) => {
     let { id } = req.params;
     await Listing.findByIdAndDelete(id);
