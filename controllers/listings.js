@@ -67,19 +67,14 @@ module.exports.updateListing = async (req, res) => {
         const geoRes = await fetch(
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
         );
-        let geoData;
+        const geoData = await geoRes.json();
+
         let geometry = { type: "Point", coordinates: [0, 0] };
-        if (geoRes.ok && geoRes.headers.get("content-type") && geoRes.headers.get("content-type").includes("application/json")) {
-            geoData = await geoRes.json();
-            if (geoData && geoData.length > 0) {
-                geometry = {
-                    type: "Point",
-                    coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)]
-                };
-            }
-        } else {
-            req.flash("error", "Failed to fetch geolocation data. Please try again later.");
-            return res.redirect(`/listings/${id}/edit`);
+        if (geoData && geoData.length > 0) {
+            geometry = {
+                type: "Point",
+                coordinates: [parseFloat(geoData[0].lon), parseFloat(geoData[0].lat)]
+            };
         }
 
         // Update the listing with new data including geometry
