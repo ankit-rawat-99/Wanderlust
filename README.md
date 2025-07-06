@@ -127,27 +127,6 @@ Before running this application, make sure you have the following installed:
 - **Error Handling**: Graceful fallback for geocoding failures
 - **Validation**: Proper error handling for invalid locations
 
-## 🔧 API Endpoints
-
-### Authentication
-- `GET /user/signup` - User registration form
-- `POST /user/signup` - Create new user account
-- `GET /user/login` - User login form
-- `POST /user/login` - Authenticate user
-- `GET /user/logout` - Logout user
-
-### Listings
-- `GET /listings` - Display all listings
-- `GET /listings/new` - Create new listing form
-- `POST /listings` - Create new listing
-- `GET /listings/:id` - Show specific listing
-- `GET /listings/:id/edit` - Edit listing form
-- `PUT /listings/:id` - Update listing
-- `DELETE /listings/:id` - Delete listing
-
-### Reviews
-- `POST /listings/:id/reviews` - Add review to listing
-- `DELETE /listings/:id/reviews/:reviewId` - Delete review
 
 ## 🚀 Deployment
 
